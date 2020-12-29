@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corona Live Update</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        #header{
+            margin-top: 30px;
+            margin-bottom: 10px;
+            text-align: center;
+            color: red;
+            opacity: .7;
+        }
+        .note{
+            margin-top: 20px;
+            margin-bottom: 10px;
+            text-align: center;
+            font-weight: bolder;
+            color: blue;
+        }
+        .globalCases{
+            box-sizing: border-box;
+            border: 5px solid rgb(247, 200, 100);
+            width: 50%;
+            margin: 80px auto;
+            padding: 10px;
+            font-weight: bolder;
+        }
+        .box{
+            box-sizing: border-box;
+            border: 5px solid rgb(253, 119, 193);
+            margin: 10px auto;
+            text-align: center;
+            width: 50%;
+            padding: 10px;
+        }
+        .country{
+            margin: 10px;
+            font-weight: bolder;
+        }
+        .countryname{
+            text-align: center;
+             font-size:x-large; 
+             font-weight: bolder;
+        }
+        .submitbutton{
+            padding: 5px;
+            background-color: rgb(16, 230, 51);
+            width: 120px;
+            font-weight: bolder;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .submitbutton:hover{
+            background-color: rgb(142, 241, 155);
+        }
+        #resetbtn{
+            margin-right: 20px;
+        }
+        .red{
+            color: red;
+        }
+
+
+        @media screen and (max-width: 600px){
+            .globalCases{
+                width: 90%;
+                margin: 40px auto;
+            }
+            .box{
+                width: 90%;
+            }
+            .country{
+                margin: 0px;
+            }
+            #header{
+                margin-top: 10px;
+            }
+        }
+        
+         @media screen and (max-width: 325px){
+            .btn{
+                display: flex;
+                justify-content: space-around;
+            }
+        } 
+    </style>
+</head>
+<body>
+     <h1 id="header">Covid-19 Live updates in the world</h1>
+     <div class="globalCases">
+         <div class="countryname"></div>
+        <div>New Confirmed Cases :<label class="newconfirmed red"></label> </div>
+         <div>Total Confirmed Cases :<label class="totalconfirmed red"></div> 
+         <div>New Death :<label class="newdeath red"></label></div> 
+         <div>Total Death :<label class="totaldeaths red"></label></div> 
+         <div>New Recovered :<label class="newrecovered red"></label></div> 
+         <div>New Recovered :<label class="totalrecovered red"></label></div> 
+     </div> 
+     <p class="note">( Enter the country name to know the Live updates of Covid-19 )</p>   
+     <div class="box">
+           <div class="country">
+               Enter country name : 
+               <input type="text" id="countryinput">
+           </div>
+           <div class="btn">
+               <button onclick="CoronaData()" class="submitbutton" id="resetbtn">Reset</button>
+               <button type="submit" onclick="getData()" class="submitbutton">Submit</button>
+           </div>
+     </div>
+     
+
+    <script>
+        var objData , origData;
+        const CoronaData = async() => {
+           const  jsonData = await fetch("https://api.covid19api.com/summary");
+            objData = await jsonData.json();
+            origData = [objData]
+            var countryname = document.getElementsByClassName("countryname");
+            countryname[0].innerHTML = "Global";
+            console.log(Object.keys(origData[0].Countries).length);
+            var newconfirmed = document.getElementsByClassName("newconfirmed");
+            newconfirmed[0].innerHTML = origData[0].Global.NewConfirmed;
+            var totalconfirmed = document.getElementsByClassName("totalconfirmed");
+            totalconfirmed[0].innerHTML = origData[0].Global.TotalConfirmed;
+            var newdeath = document.getElementsByClassName("newdeath");
+            newdeath[0].innerHTML = origData[0].Global.NewDeaths;
+            var totaldeath = document.getElementsByClassName("totaldeaths");
+            totaldeath[0].innerHTML = origData[0].Global.TotalDeaths;
+            var newrecovered = document.getElementsByClassName("newrecovered");
+            newrecovered[0].innerHTML = origData[0].Global.NewRecovered;
+            var totalrecovered = document.getElementsByClassName("totalrecovered");
+            totalrecovered[0].innerHTML = origData[0].Global.TotalRecovered;
+        }
+        CoronaData();
+        const getData = () => {
+            var inp = document.getElementById("countryinput").value;
+            var inp2="";
+            if(inp[0]>='a' && inp[0]<='z')
+            {
+                var i=0;
+                var l=inp.length;
+                var x=inp.slice(1,l);
+               var y=inp[0].toUpperCase();
+               inp2 = inp2 + y+x;
+               inp=inp2;
+            }
+            console.log(inp);
+            const n=Object.keys(origData[0].Countries).length;
+            var i=0;
+            for(i=0;i<n;i++)
+            {
+                var tmp=origData[0].Countries[i].Country;
+                if(inp==tmp)
+                {
+                    printcases(i);
+                    break;
+                }
+            }
+        }
+        const printcases = (i) => {
+            var countryname = document.getElementsByClassName("countryname");
+            countryname[0].innerHTML = origData[0].Countries[i].Country;
+            //console.log(Object.keys(origData[0].Countries).length);
+            var newconfirmed = document.getElementsByClassName("newconfirmed");
+            newconfirmed[0].innerHTML = origData[0].Countries[i].NewConfirmed;
+            var totalconfirmed = document.getElementsByClassName("totalconfirmed");
+            totalconfirmed[0].innerHTML = origData[0].Countries[i].TotalConfirmed;
+            var newdeath = document.getElementsByClassName("newdeath");
+            newdeath[0].innerHTML = origData[0].Countries[i].NewDeaths;
+            var totaldeath = document.getElementsByClassName("totaldeaths");
+            totaldeath[0].innerHTML = origData[0].Countries[i].TotalDeaths;
+            var newrecovered = document.getElementsByClassName("newrecovered");
+            newrecovered[0].innerHTML = origData[0].Countries[i].NewRecovered;
+            var totalrecovered = document.getElementsByClassName("totalrecovered");
+            totalrecovered[0].innerHTML = origData[0].Countries[i].TotalRecovered;
+        }
+    </script>
+</body>
+</html>
