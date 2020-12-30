@@ -100,7 +100,7 @@
          <div>New Death :<label class="newdeath red"></label></div> 
          <div>Total Death :<label class="totaldeaths red"></label></div> 
          <div>New Recovered :<label class="newrecovered red"></label></div> 
-         <div>New Recovered :<label class="totalrecovered red"></label></div> 
+         <div>Total Recovered :<label class="totalrecovered red"></label></div> 
      </div> 
      <p class="note">( Enter the country name to know the Live updates of Covid-19 )</p>   
      <div class="box">
@@ -109,7 +109,7 @@
                <input type="text" id="countryinput">
            </div>
            <div class="btn">
-               <button onclick="CoronaData()" class="submitbutton" id="resetbtn">Reset</button>
+               <button onclick="Reset()" class="submitbutton" id="resetbtn">Reset</button>
                <button type="submit" onclick="getData()" class="submitbutton">Submit</button>
            </div>
      </div>
@@ -123,7 +123,7 @@
             origData = [objData]
             var countryname = document.getElementsByClassName("countryname");
             countryname[0].innerHTML = "Global";
-            console.log(Object.keys(origData[0].Countries).length);
+            //console.log(Object.keys(origData[0].Countries).length);
             var newconfirmed = document.getElementsByClassName("newconfirmed");
             newconfirmed[0].innerHTML = origData[0].Global.NewConfirmed;
             var totalconfirmed = document.getElementsByClassName("totalconfirmed");
@@ -139,29 +139,26 @@
         }
         CoronaData();
         const getData = () => {
-            var inp = document.getElementById("countryinput").value;
-            var inp2="";
-            if(inp[0]>='a' && inp[0]<='z')
-            {
-                var i=0;
-                var l=inp.length;
-                var x=inp.slice(1,l);
-               var y=inp[0].toUpperCase();
-               inp2 = inp2 + y+x;
-               inp=inp2;
-            }
-            console.log(inp);
+            var inp = document.getElementById("countryinput").value.toLowerCase();
+            //console.log(inp);
             const n=Object.keys(origData[0].Countries).length;
             var i=0;
+            if(inp=="")
+            {
+                alertbox();
+            }
+            else{
             for(i=0;i<n;i++)
             {
-                var tmp=origData[0].Countries[i].Country;
-                if(inp==tmp)
+                var tmp=origData[0].Countries[i].Country.toLowerCase();
+                //console.log(tmp.search(inp));
+                if(tmp.search(inp)!=-1)
                 {
                     printcases(i);
                     break;
                 }
             }
+                }
         }
         const printcases = (i) => {
             var countryname = document.getElementsByClassName("countryname");
@@ -179,6 +176,13 @@
             newrecovered[0].innerHTML = origData[0].Countries[i].NewRecovered;
             var totalrecovered = document.getElementsByClassName("totalrecovered");
             totalrecovered[0].innerHTML = origData[0].Countries[i].TotalRecovered;
+        }
+        const alertbox = () => {
+            alert("Enter the country name to check the covid updates in that country");
+        }
+        const Reset = () =>{
+            CoronaData();
+            document.getElementById("countryinput").value = '';
         }
     </script>
 </body>
